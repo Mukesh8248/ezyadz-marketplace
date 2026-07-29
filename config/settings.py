@@ -1,10 +1,17 @@
 import os
 from pathlib import Path
 
+import cloudinary
 import dj_database_url
 from django.contrib.messages import constants as messages
+from dotenv import load_dotenv
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load variables from the .env file in the project root
+load_dotenv(BASE_DIR / ".env")
+
 
 # =========================================================
 # SECURITY
@@ -17,16 +24,20 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
+
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
 ]
 
 render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+
 if render_hostname:
     ALLOWED_HOSTS.append(render_hostname)
 
+
 custom_allowed_hosts = os.environ.get("ALLOWED_HOSTS", "")
+
 if custom_allowed_hosts:
     ALLOWED_HOSTS.extend(
         host.strip()
@@ -34,14 +45,39 @@ if custom_allowed_hosts:
         if host.strip()
     )
 
+
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
 ]
 
 render_external_url = os.environ.get("RENDER_EXTERNAL_URL")
+
 if render_external_url:
-    CSRF_TRUSTED_ORIGINS.append(render_external_url.rstrip("/"))
+    CSRF_TRUSTED_ORIGINS.append(
+        render_external_url.rstrip("/")
+    )
+
+
+custom_csrf_origins = os.environ.get(
+    "CSRF_TRUSTED_ORIGINS",
+    "",
+)
+
+if custom_csrf_origins:
+    CSRF_TRUSTED_ORIGINS.extend(
+        origin.strip().rstrip("/")
+        for origin in custom_csrf_origins.split(",")
+        if origin.strip()
+    )
+
+
+# Remove duplicate values
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
+CSRF_TRUSTED_ORIGINS = list(
+    dict.fromkeys(CSRF_TRUSTED_ORIGINS)
+)
+
 
 # =========================================================
 # APPLICATIONS
@@ -55,6 +91,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "cloudinary",
+    "cloudinary_storage",
+
     "rest_framework",
     "rest_framework_simplejwt",
 
@@ -64,6 +103,7 @@ INSTALLED_APPS = [
     "wallets",
     "api",
 ]
+
 
 # =========================================================
 # MIDDLEWARE
@@ -81,7 +121,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "config.urls"
+
 
 # =========================================================
 # TEMPLATES
@@ -89,7 +131,9 @@ ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "BACKEND": (
+            "django.template.backends.django.DjangoTemplates"
+        ),
         "DIRS": [
             BASE_DIR / "templates",
         ],
@@ -97,63 +141,90 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+                (
+                    "django.contrib.auth."
+                    "context_processors.auth"
+                ),
+                (
+                    "django.contrib.messages."
+                    "context_processors.messages"
+                ),
             ],
         },
     },
 ]
 
+
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
+
 
 # =========================================================
 # DATABASE
 # =========================================================
 
+default_database_url = (
+    f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+)
+
 DATABASES = {
     "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=default_database_url,
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
 
+
 # =========================================================
-# CUSTOM USER
+# CUSTOM USER MODEL
 # =========================================================
 
 AUTH_USER_MODEL = "accounts.User"
 
+
 # =========================================================
-# PASSWORD VALIDATORS
+# PASSWORD VALIDATION
 # =========================================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "NumericPasswordValidator"
+        ),
     },
 ]
+
 
 # =========================================================
 # INTERNATIONALIZATION
 # =========================================================
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Kolkata"
 
 USE_I18N = True
 USE_TZ = True
+
 
 # =========================================================
 # STATIC FILES
@@ -167,33 +238,70 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# =========================================================
-# MEDIA FILES (LOCAL STORAGE)
-# =========================================================
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
 # =========================================================
-# STORAGES
+# CLOUDINARY MEDIA STORAGE
 # =========================================================
+
+CLOUDINARY_CLOUD_NAME = os.environ.get(
+    "CLOUDINARY_CLOUD_NAME",
+    "",
+).strip()
+
+CLOUDINARY_API_KEY = os.environ.get(
+    "CLOUDINARY_API_KEY",
+    "",
+).strip()
+
+CLOUDINARY_API_SECRET = os.environ.get(
+    "CLOUDINARY_API_SECRET",
+    "",
+).strip()
+
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": CLOUDINARY_CLOUD_NAME,
+    "API_KEY": CLOUDINARY_API_KEY,
+    "API_SECRET": CLOUDINARY_API_SECRET,
+    "SECURE": True,
+}
+
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
+    secure=True,
+)
+
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": (
+            "cloudinary_storage.storage."
+            "MediaCloudinaryStorage"
+        ),
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": (
+            "whitenoise.storage."
+            "CompressedManifestStaticFilesStorage"
+        ),
     },
 }
 
+
+MEDIA_URL = "/media/"
+
+
 # =========================================================
-# LOGIN
+# AUTHENTICATION REDIRECTS
 # =========================================================
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "home"
+
 
 # =========================================================
 # DJANGO REST FRAMEWORK
@@ -201,19 +309,30 @@ LOGOUT_REDIRECT_URL = "home"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        (
+            "rest_framework_simplejwt.authentication."
+            "JWTAuthentication"
+        ),
+        (
+            "rest_framework.authentication."
+            "SessionAuthentication"
+        ),
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+        "rest_framework.permissions."
+        "IsAuthenticatedOrReadOnly",
     ),
 }
+
 
 # =========================================================
 # EMAIL
 # =========================================================
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+)
+
 
 # =========================================================
 # MESSAGE TAGS
@@ -227,11 +346,6 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
 }
 
-# =========================================================
-# DEFAULT AUTO FIELD
-# =========================================================
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # =========================================================
 # PRODUCTION SECURITY
@@ -247,6 +361,9 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
 
-    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
