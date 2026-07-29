@@ -7,16 +7,9 @@ from marketplace.views import home_view
 
 
 urlpatterns = [
-    path(
-        "admin/",
-        admin.site.urls,
-    ),
+    path("admin/", admin.site.urls),
 
-    path(
-        "",
-        home_view,
-        name="home",
-    ),
+    path("", home_view, name="home"),
 
     path(
         "accounts/",
@@ -45,7 +38,7 @@ urlpatterns = [
 ]
 
 
-if settings.DEBUG:
+if settings.DEBUG and hasattr(settings, "MEDIA_ROOT"):
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,

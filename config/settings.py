@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import cloudinary
 import dj_database_url
 from django.contrib.messages import constants as messages
 
@@ -79,6 +80,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "cloudinary",
+    "cloudinary_storage",
+
     "rest_framework",
     "rest_framework_simplejwt",
 
@@ -96,8 +100,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # WhiteNoise must come directly after SecurityMiddleware.
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -127,9 +129,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                (
-                    "django.template.context_processors.request"
-                ),
+                "django.template.context_processors.request",
                 (
                     "django.contrib.auth."
                     "context_processors.auth"
@@ -209,9 +209,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # =========================================================
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Kolkata"
-
 USE_I18N = True
 USE_TZ = True
 
@@ -229,10 +227,30 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
+# =========================================================
+# CLOUDINARY MEDIA STORAGE
+# =========================================================
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+    "SECURE": True,
+}
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE["CLOUD_NAME"],
+    api_key=CLOUDINARY_STORAGE["API_KEY"],
+    api_secret=CLOUDINARY_STORAGE["API_SECRET"],
+    secure=True,
+)
+
+
 STORAGES = {
     "default": {
         "BACKEND": (
-            "django.core.files.storage.FileSystemStorage"
+            "cloudinary_storage.storage."
+            "MediaCloudinaryStorage"
         ),
     },
     "staticfiles": {
@@ -244,18 +262,7 @@ STORAGES = {
 }
 
 
-# =========================================================
-# MEDIA FILES
-# =========================================================
-
 MEDIA_URL = "/media/"
-
-MEDIA_ROOT = Path(
-    os.environ.get(
-        "MEDIA_ROOT",
-        str(BASE_DIR / "media"),
-    )
-)
 
 
 # =========================================================
