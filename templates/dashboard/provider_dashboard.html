@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Provider Dashboard | EZYADZ{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+    <div class="page-container">
+        <div class="dashboard-welcome">
+            <div>
+                <span>Provider Dashboard</span>
+
+                <h1>
+                    Welcome,
+                    {{ request.user.first_name|default:request.user.username }}
+                </h1>
+
+                <p>
+                    Manage your services and customer bookings.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'add_service' %}"
+                class="primary-button"
+            >
+                Add New Service
+            </a>
+        </div>
+
+        {% if request.user.provider_profile.is_approved %}
+            <div class="provider-notice approved-notice">
+                Your provider account has been approved.
+            </div>
+        {% else %}
+            <div class="provider-notice pending-notice">
+                Your provider account is waiting for administrator
+                approval.
+            </div>
+        {% endif %}
+
+        <div class="dashboard-stat-grid">
+            <div class="dashboard-stat-card">
+                <div class="stat-icon">🛠️</div>
+
+                <div>
+                    <span>Total Services</span>
+                    <strong>{{ services.count|default:0 }}</strong>
+                </div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="stat-icon">📅</div>
+
+                <div>
+                    <span>Total Bookings</span>
+                    <strong>{{ booking_count|default:0 }}</strong>
+                </div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="stat-icon">💰</div>
+
+                <div>
+                    <span>Wallet</span>
+
+                    <a href="{% url 'wallet' %}">
+                        View wallet
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section-card">
+            <div class="dashboard-section-heading">
+                <div>
+                    <h2>Your services</h2>
+                    <p>Manage the services displayed to customers.</p>
+                </div>
+
+                <a href="{% url 'add_service' %}">
+                    Add service
+                </a>
+            </div>
+
+            {% if services %}
+                <div class="dashboard-service-grid">
+                    {% for service in services %}
+                        <article class="dashboard-service-card">
+                            <div>
+                                <span class="service-category">
+                                    {{ service.category.name }}
+                                </span>
+
+                                <h3>{{ service.title }}</h3>
+
+                                <p>
+                                    {{ service.description|truncatewords:15 }}
+                                </p>
+
+                                <strong>₹{{ service.price }}</strong>
+                            </div>
+
+                            <div class="dashboard-card-actions">
+                                <a
+                                    href="{% url 'service_detail' service.id %}"
+                                >
+                                    View
+                                </a>
+
+                                <a
+                                    href="{% url 'edit_service' service.id %}"
+                                >
+                                    Edit
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>You have not added any services</h3>
+
+                    <a
+                        href="{% url 'add_service' %}"
+                        class="primary-button"
+                    >
+                        Add First Service
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-section-card">
+            <div class="dashboard-section-heading">
+                <div>
+                    <h2>Recent bookings</h2>
+                    <p>Latest bookings received from customers.</p>
+                </div>
+
+                <a href="{% url 'booking_history' %}">
+                    View all
+                </a>
+            </div>
+
+            {% if bookings %}
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for booking in bookings %}
+                                <tr>
+                                    <td>
+                                        {{ booking.customer.username }}
+                                    </td>
+
+                                    <td>{{ booking.service.title }}</td>
+
+                                    <td>₹{{ booking.total_amount }}</td>
+
+                                    <td>
+                                        <span
+                                            class="status-badge status-{{ booking.status }}"
+                                        >
+                                            {{ booking.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No customer bookings yet</h3>
+
+                    <p>
+                        New bookings will appear here.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Booking History | EZYADZ{% endblock %}
+
+{% block content %}
+<div class="booking-page">
+    <div class="booking-container">
+        <div class="booking-header">
+            <div>
+                <h1>Booking History</h1>
+
+                {% if request.user.user_type == "provider" %}
+                    <p>Manage customer service bookings.</p>
+                {% else %}
+                    <p>View and track your service bookings.</p>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'home' %}" class="back-home-btn">
+                Back to Home
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if bookings %}
+            <div class="booking-grid">
+                {% for booking in bookings %}
+                    <div class="booking-card">
+                        <div class="booking-card-header">
+                            <div>
+                                <span class="booking-number">
+                                    Booking #{{ booking.id }}
+                                </span>
+
+                                <h2>{{ booking.service.title }}</h2>
+                            </div>
+
+                            <span class="status-badge status-{{ booking.status }}">
+                                {{ booking.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div class="booking-details">
+                            {% if request.user.user_type == "provider" %}
+                                <div class="booking-detail-row">
+                                    <span>Customer</span>
+                                    <strong>
+                                        {{ booking.customer.get_full_name|default:booking.customer.username }}
+                                    </strong>
+                                </div>
+                            {% else %}
+                                <div class="booking-detail-row">
+                                    <span>Provider</span>
+                                    <strong>
+                                        {{ booking.provider.get_full_name|default:booking.provider.username }}
+                                    </strong>
+                                </div>
+                            {% endif %}
+
+                            <div class="booking-detail-row">
+                                <span>Booking Date</span>
+                                <strong>
+                                    {{ booking.booking_date|date:"d M Y" }}
+                                </strong>
+                            </div>
+
+                            <div class="booking-detail-row">
+                                <span>Booking Time</span>
+                                <strong>
+                                    {{ booking.booking_time|time:"h:i A" }}
+                                </strong>
+                            </div>
+
+                            <div class="booking-detail-row">
+                                <span>Address</span>
+                                <strong>{{ booking.service_address }}</strong>
+                            </div>
+
+                            <div class="booking-detail-row">
+                                <span>Total Amount</span>
+                                <strong>₹{{ booking.total_amount }}</strong>
+                            </div>
+                        </div>
+
+                        {% if booking.notes %}
+                            <div class="booking-notes">
+                                <strong>Notes:</strong>
+                                <p>{{ booking.notes }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if request.user.user_type == "provider" %}
+                            <div class="booking-actions">
+                                {% if booking.status == "pending" %}
+                                    <form
+                                        method="post"
+                                        action="{% url 'update_booking_status' booking.id 'accepted' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-accept">
+                                            Accept
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'update_booking_status' booking.id 'cancelled' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-cancel">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                {% elif booking.status == "accepted" %}
+                                    <form
+                                        method="post"
+                                        action="{% url 'update_booking_status' booking.id 'completed' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-complete">
+                                            Mark Completed
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'update_booking_status' booking.id 'cancelled' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-cancel">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-bookings">
+                <div class="empty-icon">📅</div>
+
+                <h2>No bookings found</h2>
+
+                {% if request.user.user_type == "provider" %}
+                    <p>You have not received any customer bookings yet.</p>
+                {% else %}
+                    <p>You have not booked any services yet.</p>
+
+                    <a href="{% url 'service_list' %}" class="browse-services-btn">
+                        Browse Services
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

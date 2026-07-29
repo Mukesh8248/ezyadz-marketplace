@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP | EZYADZ{% endblock %}
+
+{% block content %}
+<div class="otp-page">
+    <div class="otp-card">
+        <div class="otp-icon">🔐</div>
+
+        <h1>Verify Your Account</h1>
+
+        <p class="otp-description">
+            Enter the 6-digit OTP shown in your VS Code terminal.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.otp.id_for_label }}">
+                    Enter OTP
+                </label>
+
+                {{ form.otp }}
+
+                {% if form.otp.errors %}
+                    {% for error in form.otp.errors %}
+                        <small class="field-error">
+                            {{ error }}
+                        </small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <button type="submit" class="verify-btn">
+                Verify OTP
+            </button>
+        </form>
+
+        <p class="login-link">
+            Already verified?
+            <a href="{% url 'login' %}">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

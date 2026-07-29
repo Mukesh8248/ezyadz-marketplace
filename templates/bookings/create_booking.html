@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Book Service | EZYADZ{% endblock %}
+
+{% block content %}
+
+<section class="booking-form-page">
+    <div class="page-container">
+        <div class="page-heading">
+            <div>
+                <span>Book an Appointment</span>
+                <h1>Complete your booking</h1>
+                <p>
+                    Select your preferred date, time and address.
+                </p>
+            </div>
+        </div>
+
+        <div class="booking-form-layout">
+            <aside class="selected-service-card">
+                {% if service.images.first %}
+                    <img
+                        src="{{ service.images.first.image.url }}"
+                        alt="{{ service.title }}"
+                    >
+                {% endif %}
+
+                <div class="selected-service-content">
+                    <span class="service-category">
+                        {{ service.category.name }}
+                    </span>
+
+                    <h2>{{ service.title }}</h2>
+
+                    <p>
+                        {{ service.description|truncatewords:25 }}
+                    </p>
+
+                    <div class="summary-row">
+                        <span>Provider</span>
+                        <strong>
+                            {{ service.provider.username }}
+                        </strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Price</span>
+                        <strong>₹{{ service.price }}</strong>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="booking-form-card">
+                <h2>Booking details</h2>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+
+                                {% if field.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <small class="help-text">
+                                    {{ field.help_text }}
+                                </small>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <small class="field-error">
+                                    {{ error }}
+                                </small>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="booking-total">
+                        <span>Total amount</span>
+                        <strong>₹{{ service.price }}</strong>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="full-primary-button"
+                    >
+                        Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

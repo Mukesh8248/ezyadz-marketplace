@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard | EZYADZ{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+    <div class="page-container">
+        <div class="dashboard-welcome">
+            <div>
+                <span>Customer Dashboard</span>
+
+                <h1>
+                    Welcome,
+                    {{ request.user.first_name|default:request.user.username }}
+                </h1>
+
+                <p>
+                    Find services and monitor your bookings.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'service_list' %}"
+                class="primary-button"
+            >
+                Browse Services
+            </a>
+        </div>
+
+        <div class="dashboard-stat-grid">
+            <div class="dashboard-stat-card">
+                <div class="stat-icon">📅</div>
+
+                <div>
+                    <span>Total Bookings</span>
+                    <strong>{{ booking_count|default:0 }}</strong>
+                </div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="stat-icon">👤</div>
+
+                <div>
+                    <span>Account Type</span>
+                    <strong>Customer</strong>
+                </div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="stat-icon">✅</div>
+
+                <div>
+                    <span>Mobile Status</span>
+
+                    <strong>
+                        {% if request.user.is_mobile_verified %}
+                            Verified
+                        {% else %}
+                            Not Verified
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section-card">
+            <div class="dashboard-section-heading">
+                <div>
+                    <h2>Recent bookings</h2>
+                    <p>Your five most recent service bookings.</p>
+                </div>
+
+                <a href="{% url 'booking_history' %}">
+                    View all
+                </a>
+            </div>
+
+            {% if bookings %}
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Provider</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for booking in bookings %}
+                                <tr>
+                                    <td>{{ booking.service.title }}</td>
+
+                                    <td>
+                                        {{ booking.provider.username }}
+                                    </td>
+
+                                    <td>₹{{ booking.total_amount }}</td>
+
+                                    <td>
+                                        <span
+                                            class="status-badge status-{{ booking.status }}"
+                                        >
+                                            {{ booking.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📅</div>
+
+                    <h3>No bookings yet</h3>
+
+                    <p>
+                        Browse services and create your first booking.
+                    </p>
+
+                    <a
+                        href="{% url 'service_list' %}"
+                        class="primary-button"
+                    >
+                        Browse Services
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

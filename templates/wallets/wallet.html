@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Wallet | EZYADZ{% endblock %}
+
+{% block content %}
+
+<section class="wallet-page">
+    <div class="page-container">
+        <div class="page-heading">
+            <div>
+                <span>Provider Earnings</span>
+                <h1>My Wallet</h1>
+
+                <p>
+                    View your earnings, commissions and transactions.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="secondary-button"
+            >
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="wallet-balance-card">
+            <div>
+                <span>Available Balance</span>
+
+                <h2>₹{{ wallet.balance|default:"0.00" }}</h2>
+
+                <p>
+                    Earnings after EZYADZ commission.
+                </p>
+            </div>
+
+            <div class="wallet-icon">
+                💰
+            </div>
+        </div>
+
+        <div class="dashboard-section-card">
+            <div class="dashboard-section-heading">
+                <div>
+                    <h2>Transaction history</h2>
+
+                    <p>
+                        Payments and commissions from completed bookings.
+                    </p>
+                </div>
+            </div>
+
+            {% if transactions %}
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Booking</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in transactions %}
+                                <tr>
+                                    <td>
+                                        {{ item.created_at|date:"d M Y, h:i A" }}
+                                    </td>
+
+                                    <td>{{ item.description }}</td>
+
+                                    <td>
+                                        {% if item.booking %}
+                                            #{{ item.booking.id }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="transaction-type transaction-{{ item.transaction_type }}"
+                                        >
+                                            {{ item.get_transaction_type_display }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        {% if item.transaction_type == "credit" %}
+                                            <span class="amount-credit">
+                                                +₹{{ item.amount }}
+                                            </span>
+                                        {% else %}
+                                            <span class="amount-deduction">
+                                                -₹{{ item.amount }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">💳</div>
+
+                    <h3>No transactions yet</h3>
+
+                    <p>
+                        Payments will appear after bookings are completed.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

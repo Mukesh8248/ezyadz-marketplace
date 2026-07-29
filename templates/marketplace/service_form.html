@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if service %}
+        Edit Service
+    {% else %}
+        Add Service
+    {% endif %}
+    | EZYADZ
+{% endblock %}
+
+{% block content %}
+
+<section class="service-form-page">
+    <div class="page-container small-container">
+
+        <div class="page-heading">
+            <div>
+                <span>Provider Service</span>
+
+                {% if service %}
+                    <h1>Edit Service</h1>
+                    <p>Update your service information and images.</p>
+                {% else %}
+                    <h1>Add New Service</h1>
+                    <p>Create a service for customers to book.</p>
+                {% endif %}
+            </div>
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="secondary-button"
+            >
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="service-form-card">
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                novalidate
+            >
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="form-group">
+
+                        {% if field.name == "is_available" %}
+                            <label class="checkbox-field">
+                                {{ field }}
+                                <span>{{ field.label }}</span>
+                            </label>
+                        {% else %}
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+
+                                {% if field.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ field }}
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <small class="help-text">
+                                {{ field.help_text }}
+                            </small>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <small class="field-error">
+                                {{ error }}
+                            </small>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                {% if service and service.images.all %}
+                    <div class="existing-images">
+                        <h2>Current Images</h2>
+
+                        <div class="existing-images-grid">
+                            {% for image in service.images.all %}
+                                <div class="existing-image-card">
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        alt="{{ service.title }}"
+                                    >
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'delete_service_image' image.id %}"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="delete-image-button"
+                                            onclick="return confirm('Delete this image?')"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <button
+                    type="submit"
+                    class="full-primary-button"
+                >
+                    {% if service %}
+                        Save Changes
+                    {% else %}
+                        Publish Service
+                    {% endif %}
+                </button>
+            </form>
+
+            {% if service %}
+                <form
+                    method="post"
+                    action="{% url 'delete_service' service.id %}"
+                    class="delete-service-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="delete-service-button"
+                        onclick="return confirm('Are you sure you want to delete this service?')"
+                    >
+                        Delete Service
+                    </button>
+                </form>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

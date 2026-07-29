@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.title }} | EZYADZ{% endblock %}
+
+{% block content %}
+
+<section class="service-detail-page">
+    <div class="page-container">
+        <a
+            href="{% url 'service_list' %}"
+            class="back-link"
+        >
+            ← Back to services
+        </a>
+
+        <div class="service-detail-layout">
+            <div class="service-gallery">
+                {% if service.images.all %}
+                    {% for service_image in service.images.all %}
+                        {% if forloop.first %}
+                            <img
+                                src="{{ service_image.image.url }}"
+                                alt="{{ service.title }}"
+                                class="main-service-image"
+                            >
+                        {% endif %}
+                    {% empty %}
+                        <div class="detail-image-placeholder">
+                            🛠️
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="detail-image-placeholder">
+                        🛠️
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="service-detail-content">
+                <span class="service-category">
+                    {{ service.category.name }}
+                </span>
+
+                <h1>{{ service.title }}</h1>
+
+                <div class="service-detail-provider">
+                    Provided by
+                    <strong>{{ service.provider.username }}</strong>
+                </div>
+
+                <div class="detail-price">
+                    ₹{{ service.price }}
+                </div>
+
+                {% if service.is_available %}
+                    <span class="availability available">
+                        Available for booking
+                    </span>
+                {% else %}
+                    <span class="availability unavailable">
+                        Currently unavailable
+                    </span>
+                {% endif %}
+
+                <div class="service-description">
+                    <h2>About this service</h2>
+                    <p>{{ service.description|linebreaks }}</p>
+                </div>
+
+                <div class="provider-information">
+                    <h2>Provider information</h2>
+
+                    <div class="summary-row">
+                        <span>Provider</span>
+                        <strong>
+                            {{ service.provider.get_full_name|default:service.provider.username }}
+                        </strong>
+                    </div>
+
+                    {% if service.provider.provider_profile.business_name %}
+                        <div class="summary-row">
+                            <span>Business</span>
+                            <strong>
+                                {{ service.provider.provider_profile.business_name }}
+                            </strong>
+                        </div>
+                    {% endif %}
+
+                    {% if service.provider.provider_profile.experience_years %}
+                        <div class="summary-row">
+                            <span>Experience</span>
+                            <strong>
+                                {{ service.provider.provider_profile.experience_years }}
+                                years
+                            </strong>
+                        </div>
+                    {% endif %}
+
+                    {% if service.provider.provider_profile.service_location %}
+                        <div class="summary-row">
+                            <span>Location</span>
+                            <strong>
+                                {{ service.provider.provider_profile.service_location }}
+                            </strong>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="detail-actions">
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.user_type == "customer" %}
+                            {% if service.is_available %}
+                                <a
+                                    href="{% url 'create_booking' service.id %}"
+                                    class="primary-button"
+                                >
+                                    Book This Service
+                                </a>
+                            {% endif %}
+                        {% elif request.user == service.provider %}
+                            <a
+                                href="{% url 'edit_service' service.id %}"
+                                class="primary-button"
+                            >
+                                Edit Service
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a
+                            href="{% url 'login' %}?next={{ request.path }}"
+                            class="primary-button"
+                        >
+                            Login to Book
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

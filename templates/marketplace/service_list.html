@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Services | EZYADZ{% endblock %}
+
+{% block content %}
+
+<section class="service-list-page">
+    <div class="page-container">
+        <div class="page-heading">
+            <div>
+                <span>Marketplace</span>
+                <h1>Find the right service</h1>
+
+                <p>
+                    Search and compare services from trusted providers.
+                </p>
+            </div>
+
+            {% if request.user.is_authenticated and request.user.user_type == "provider" %}
+                <a
+                    href="{% url 'add_service' %}"
+                    class="primary-button"
+                >
+                    Add Service
+                </a>
+            {% endif %}
+        </div>
+
+        <form
+            method="get"
+            action="{% url 'service_list' %}"
+            class="service-filter-form"
+        >
+            <div class="filter-field search-filter">
+                <label for="q">Search</label>
+
+                <input
+                    type="text"
+                    id="q"
+                    name="q"
+                    value="{{ request.GET.q }}"
+                    placeholder="Search by service name..."
+                >
+            </div>
+
+            <div class="filter-field">
+                <label for="category">Category</label>
+
+                <select id="category" name="category">
+                    <option value="">All categories</option>
+
+                    {% for category in categories %}
+                        <option
+                            value="{{ category.id }}"
+                            {% if request.GET.category == category.id|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="primary-button">
+                Search
+            </button>
+
+            <a
+                href="{% url 'service_list' %}"
+                class="secondary-button"
+            >
+                Reset
+            </a>
+        </form>
+
+        {% if services %}
+            <div class="service-grid">
+                {% for service in services %}
+                    <article class="service-card">
+                        <div class="service-image-wrapper">
+                            {% if service.images.first %}
+                                <img
+                                    src="{{ service.images.first.image.url }}"
+                                    alt="{{ service.title }}"
+                                    class="service-image"
+                                >
+                            {% else %}
+                                <div class="service-placeholder">
+                                    🛠️
+                                </div>
+                            {% endif %}
+
+                            {% if service.is_available %}
+                                <span class="availability available">
+                                    Available
+                                </span>
+                            {% else %}
+                                <span class="availability unavailable">
+                                    Unavailable
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="service-card-content">
+                            <span class="service-category">
+                                {{ service.category.name }}
+                            </span>
+
+                            <h2>{{ service.title }}</h2>
+
+                            <p>
+                                {{ service.description|truncatewords:20 }}
+                            </p>
+
+                            <div class="service-provider">
+                                By
+                                <strong>
+                                    {{ service.provider.username }}
+                                </strong>
+                            </div>
+
+                            <div class="service-card-footer">
+                                <span class="service-price">
+                                    ₹{{ service.price }}
+                                </span>
+
+                                <a
+                                    href="{% url 'service_detail' service.id %}"
+                                    class="small-primary-button"
+                                >
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+
+                <h2>No services found</h2>
+
+                <p>
+                    Try changing your search or category.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
