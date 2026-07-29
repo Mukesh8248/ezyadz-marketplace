@@ -2824,3 +2824,209 @@ main {
         flex-direction: column;
     }
 }
+.admin-login-button,
+.admin-nav-button {
+    display: inline-flex;
+    min-height: 46px;
+    padding: 10px 18px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #7c3aed;
+    border-radius: 10px;
+    background: #7c3aed;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-login-button:hover,
+.admin-nav-button:hover {
+    border-color: #6d28d9;
+    background: #6d28d9;
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+    transform: translateY(-2px);
+}
+
+.admin-login-button:focus,
+.admin-nav-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.18);
+}
+
+@media (max-width: 820px) {
+    .admin-login-button,
+    .admin-nav-button {
+        width: 100%;
+    }
+}
+/* =========================================================
+   COMPACT FORM TEXT FIX
+   Add this at the very bottom of style.css
+   ========================================================= */
+
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+    letter-spacing: normal !important;
+}
+
+/* Normal input text size */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    letter-spacing: normal !important;
+    padding: 14px 16px !important;
+    min-height: 50px !important;
+}
+
+/* Placeholder text */
+input::placeholder,
+textarea::placeholder {
+    font-size: 15px !important;
+    letter-spacing: normal !important;
+    color: #7b8190;
+    opacity: 1;
+}
+
+/* Select dropdown text */
+select,
+select option {
+    font-size: 16px !important;
+    letter-spacing: normal !important;
+}
+
+/* Textarea */
+textarea {
+    min-height: 130px !important;
+    resize: vertical;
+}
+
+/* Form labels */
+label,
+.form-label,
+.form-group label {
+    font-size: 14px !important;
+    line-height: 1.4;
+    letter-spacing: normal !important;
+    margin-bottom: 8px !important;
+}
+
+/* Login and register headings */
+.auth-card h1,
+.auth-card h2,
+.login-card h1,
+.login-card h2,
+.register-card h1,
+.register-card h2,
+.form-card h1,
+.form-card h2 {
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+    letter-spacing: normal !important;
+    margin-bottom: 14px !important;
+}
+
+/* Add service page heading */
+.page-header h1,
+.service-form-header h1,
+.form-page-header h1 {
+    font-size: 42px !important;
+    line-height: 1.15 !important;
+    letter-spacing: normal !important;
+}
+
+/* Form field spacing */
+.form-group,
+.form-field {
+    margin-bottom: 20px !important;
+}
+
+/* Reduce space between rows */
+.form-row {
+    gap: 20px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Compact form card */
+.auth-card,
+.login-card,
+.register-card,
+.form-card,
+.service-form-card {
+    padding: 34px !important;
+}
+
+/* Normal button text */
+button,
+.btn,
+.nav-primary,
+.admin-login-button,
+.admin-nav-button,
+.logout-button {
+    font-size: 16px !important;
+    letter-spacing: normal !important;
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="file"],
+    select,
+    textarea {
+        font-size: 15px !important;
+        padding: 12px 14px !important;
+        min-height: 46px !important;
+    }
+
+    .auth-card h1,
+    .auth-card h2,
+    .login-card h1,
+    .login-card h2,
+    .register-card h1,
+    .register-card h2,
+    .form-card h1,
+    .form-card h2 {
+        font-size: 27px !important;
+    }
+
+    .page-header h1,
+    .service-form-header h1,
+    .form-page-header h1 {
+        font-size: 32px !important;
+    }
+
+    .auth-card,
+    .login-card,
+    .register-card,
+    .form-card,
+    .service-form-card {
+        padding: 24px 20px !important;
+    }
+
+    .form-row {
+        gap: 14px !important;
+    }
+}
