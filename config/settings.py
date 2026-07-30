@@ -24,6 +24,11 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
+SHOW_MOCK_OTP = os.environ.get(
+    "SHOW_MOCK_OTP",
+    "True",
+).lower() == "true"
+
 
 ALLOWED_HOSTS = [
     "127.0.0.1",

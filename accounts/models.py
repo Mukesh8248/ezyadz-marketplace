@@ -9,7 +9,9 @@ class User(AbstractUser):
         ("provider", "Service Provider"),
     )
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(
+        unique=True,
+    )
 
     mobile_number = models.CharField(
         max_length=15,
@@ -24,7 +26,9 @@ class User(AbstractUser):
         default="customer",
     )
 
-    address = models.TextField(blank=True)
+    address = models.TextField(
+        blank=True,
+    )
 
     profile_image = models.ImageField(
         upload_to="profile_images/",
@@ -32,13 +36,21 @@ class User(AbstractUser):
         null=True,
     )
 
-    is_mobile_verified = models.BooleanField(default=False)
+    is_mobile_verified = models.BooleanField(
+        default=False,
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
 
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
 
-    REQUIRED_FIELDS = ["email"]
+    REQUIRED_FIELDS = [
+        "email",
+    ]
 
     def __str__(self):
         return self.username
@@ -136,11 +148,31 @@ class OTPVerification(models.Model):
         null=True,
     )
 
+    class Meta:
+        ordering = [
+            "-created_at",
+        ]
+
+        verbose_name = "OTP Verification"
+        verbose_name_plural = "OTP Verifications"
+
     def __str__(self):
-        return f"{self.user.username} - {self.otp_code}"
+        return (
+            f"{self.user.username} - "
+            f"{self.otp_code}"
+        )
 
     def is_expired(self):
         if self.expires_at is None:
             return False
 
-        return timezone.now() > self.expires_at
+        return timezone.now() >= self.expires_at
+
+    def mark_as_verified(self):
+        self.is_verified = True
+
+        self.save(
+            update_fields=[
+                "is_verified",
+            ]
+        )

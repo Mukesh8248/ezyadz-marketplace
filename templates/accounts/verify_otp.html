@@ -1,62 +1,174 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Verify OTP | EZYADZ{% endblock %}
+{% block title %}
+Verify Your Account | EZYADZ
+{% endblock %}
 
 {% block content %}
-<div class="otp-page">
+
+<section class="otp-page">
+
     <div class="otp-card">
-        <div class="otp-icon">🔐</div>
+
+        <div class="otp-icon">
+            🔐
+        </div>
 
         <h1>Verify Your Account</h1>
 
         <p class="otp-description">
-            Enter the 6-digit OTP shown in your VS Code terminal.
+            Enter the 6-digit OTP shown below.
         </p>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+        {% if mock_otp %}
+            <div class="mock-otp-box">
+                <span>Mock OTP</span>
+
+                <strong id="mockOtp">
+                    {{ mock_otp }}
+                </strong>
+
+                <button
+                    type="button"
+                    class="copy-otp-button"
+                    onclick="copyMockOtp()"
+                >
+                    Copy
+                </button>
+            </div>
         {% endif %}
 
-        <form method="post" novalidate>
+        {% if messages %}
+            <div class="message-container">
+
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% endif %}
+
+        <form
+            method="post"
+            action="{% url 'verify_otp' %}"
+            class="otp-form"
+            novalidate
+        >
+
             {% csrf_token %}
 
             <div class="form-group">
-                <label for="{{ form.otp.id_for_label }}">
+
+                <label for="{{ form.otp_code.id_for_label }}">
                     Enter OTP
                 </label>
 
-                {{ form.otp }}
+                {{ form.otp_code }}
 
-                {% if form.otp.errors %}
-                    {% for error in form.otp.errors %}
-                        <small class="field-error">
-                            {{ error }}
-                        </small>
-                    {% endfor %}
+                {% if form.otp_code.errors %}
+                    <div class="field-errors">
+
+                        {% for error in form.otp_code.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+
+                    </div>
                 {% endif %}
+
             </div>
 
             {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {{ error }}
-                    </div>
-                {% endfor %}
+                <div class="field-errors">
+
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+
+                </div>
             {% endif %}
 
-            <button type="submit" class="verify-btn">
+            <button
+                type="submit"
+                class="verify-button"
+            >
                 Verify OTP
             </button>
+
         </form>
 
-        <p class="login-link">
-            Already verified?
-            <a href="{% url 'login' %}">Login here</a>
-        </p>
+        <div class="otp-actions">
+
+            <p>
+                Didn't receive the OTP?
+
+                <a href="{% url 'resend_otp' %}">
+                    Generate new OTP
+                </a>
+            </p>
+
+            <p>
+                Already verified?
+
+                <a href="{% url 'login' %}">
+                    Login here
+                </a>
+            </p>
+
+        </div>
+
     </div>
-</div>
+
+</section>
+
+<script>
+    function copyMockOtp() {
+        const otpElement = document.getElementById(
+            "mockOtp"
+        );
+
+        const otpValue = otpElement.innerText.trim();
+
+        navigator.clipboard.writeText(otpValue)
+            .then(function () {
+                const input = document.getElementById(
+                    "{{ form.otp_code.id_for_label }}"
+                );
+
+                input.value = otpValue;
+                input.focus();
+            })
+            .catch(function () {
+                const input = document.getElementById(
+                    "{{ form.otp_code.id_for_label }}"
+                );
+
+                input.value = otpValue;
+                input.focus();
+            });
+    }
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            const otpInput = document.getElementById(
+                "{{ form.otp_code.id_for_label }}"
+            );
+
+            if (otpInput) {
+                otpInput.addEventListener(
+                    "input",
+                    function () {
+                        this.value = this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 6);
+                    }
+                );
+            }
+        }
+    );
+</script>
+
 {% endblock %}
