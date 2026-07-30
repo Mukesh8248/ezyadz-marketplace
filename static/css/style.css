@@ -3286,3 +3286,380 @@ button,
         letter-spacing: 5px;
     }
 }
+/* =========================================================
+   FINAL NAVBAR AND CONTENT SPACING FIX
+   Keep this block at the very bottom of style.css
+   ========================================================= */
+
+/* Slightly more compact navbar */
+.site-header .navbar,
+.main-header .navbar {
+    min-height: 70px;
+}
+
+/* Remove accidental spacing directly below navbar */
+main {
+    min-height: 65vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* =========================================================
+   HOME HERO
+   ========================================================= */
+
+.hero-section {
+    padding: 55px 20px 60px !important;
+}
+
+.hero-content > p {
+    margin-top: 16px;
+}
+
+.hero-search {
+    margin-top: 26px;
+}
+
+.hero-buttons {
+    margin-top: 20px;
+}
+
+/* =========================================================
+   HOME PAGE SECTIONS
+   ========================================================= */
+
+.home-section {
+    padding: 42px 20px 55px !important;
+}
+
+/* Section with grey background */
+.home-section.light-section,
+.light-section.home-section {
+    padding-top: 42px !important;
+    padding-bottom: 55px !important;
+}
+
+/* Heading spacing */
+.home-section .section-heading,
+.how-it-works .section-heading {
+    display: block;
+    max-width: 700px;
+    margin: 0 auto 24px !important;
+    text-align: center;
+}
+
+.home-section .section-heading > span,
+.how-it-works .section-heading > span {
+    margin-bottom: 6px;
+}
+
+.home-section .section-heading h2,
+.how-it-works .section-heading h2 {
+    margin: 0;
+}
+
+.home-section .section-heading p,
+.how-it-works .section-heading p {
+    margin-top: 6px;
+}
+
+/* =========================================================
+   CATEGORY SECTION
+   ========================================================= */
+
+.home-section .category-grid {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    gap: 18px;
+}
+
+.home-section .category-card {
+    min-height: 190px;
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.home-section .category-card .category-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 16px;
+}
+
+.home-section .category-card h3 {
+    margin: 0;
+}
+
+/* =========================================================
+   SERVICE SECTION
+   ========================================================= */
+
+.home-section .service-grid,
+.light-section .service-grid {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.center-button {
+    margin-top: 28px;
+}
+
+/* =========================================================
+   HOW IT WORKS SECTION
+   ========================================================= */
+
+.how-it-works {
+    padding: 50px 20px 60px !important;
+}
+
+.steps-grid {
+    gap: 18px;
+}
+
+.step-card {
+    padding: 25px 22px;
+}
+
+/* =========================================================
+   OTHER PAGE CONTENT SPACING
+   Dashboard, profile, services, bookings and wallet
+   ========================================================= */
+
+.profile-page,
+.dashboard-page,
+.service-list-page,
+.service-detail-page,
+.service-form-page,
+.booking-form-page,
+.wallet-page {
+    padding: 45px 20px 65px !important;
+}
+
+.page-heading,
+.dashboard-welcome {
+    margin-bottom: 26px;
+}
+
+/* Login, registration and OTP pages */
+.auth-page,
+.auth-section {
+    padding: 35px 20px !important;
+}
+
+.login-page,
+.otp-page {
+    min-height: calc(100vh - 70px);
+    padding: 35px 20px !important;
+}
+
+/* Booking list page */
+.booking-page {
+    min-height: calc(100vh - 70px);
+    padding: 40px 20px 60px !important;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .hero-section {
+        padding: 45px 20px 50px !important;
+    }
+
+    .home-section {
+        padding: 36px 20px 48px !important;
+    }
+
+    .how-it-works {
+        padding: 42px 20px 50px !important;
+    }
+
+    .profile-page,
+    .dashboard-page,
+    .service-list-page,
+    .service-detail-page,
+    .service-form-page,
+    .booking-form-page,
+    .wallet-page {
+        padding: 38px 20px 55px !important;
+    }
+
+    .home-section .section-heading,
+    .how-it-works .section-heading {
+        margin-bottom: 22px !important;
+    }
+}
+
+/* Mobile navigation position must match 70px navbar */
+@media (max-width: 820px) {
+    .nav-links,
+    .main-header .nav-links {
+        top: 70px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .container,
+    .main-header .navbar,
+    .footer-container {
+        width: calc(100% - 28px);
+    }
+
+    .site-header .navbar,
+    .main-header .navbar {
+        min-height: 66px;
+    }
+
+    .nav-links,
+    .main-header .nav-links {
+        top: 66px;
+        right: 14px;
+        left: 14px;
+    }
+
+    .hero-section {
+        padding: 30px 14px 38px !important;
+    }
+
+    .hero-content h1 {
+        font-size: 2.25rem;
+        letter-spacing: -1.5px;
+    }
+
+    .hero-content > p {
+        margin-top: 12px;
+        font-size: 0.98rem;
+    }
+
+    .hero-search {
+        margin-top: 20px;
+    }
+
+    .hero-buttons {
+        margin-top: 16px;
+    }
+
+    .home-section {
+        padding: 26px 14px 38px !important;
+    }
+
+    .home-section.light-section,
+    .light-section.home-section {
+        padding-top: 26px !important;
+        padding-bottom: 38px !important;
+    }
+
+    .home-section .section-heading,
+    .how-it-works .section-heading {
+        margin-bottom: 18px !important;
+    }
+
+    .home-section .section-heading h2,
+    .how-it-works .section-heading h2 {
+        font-size: 1.8rem;
+        line-height: 1.2;
+    }
+
+    .home-section .section-heading p,
+    .how-it-works .section-heading p {
+        margin-top: 5px;
+        font-size: 0.92rem;
+    }
+
+    .home-section .category-grid {
+        gap: 14px;
+    }
+
+    .home-section .category-card {
+        min-height: 150px;
+        padding: 20px 16px;
+    }
+
+    .home-section .category-card .category-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 12px;
+    }
+
+    .home-section .service-grid,
+    .light-section .service-grid {
+        gap: 16px;
+    }
+
+    .how-it-works {
+        padding: 32px 14px 42px !important;
+    }
+
+    .step-card {
+        padding: 22px 18px;
+    }
+
+    .profile-page,
+    .dashboard-page,
+    .service-list-page,
+    .service-detail-page,
+    .service-form-page,
+    .booking-form-page,
+    .wallet-page {
+        padding: 28px 14px 45px !important;
+    }
+
+    .page-heading,
+    .dashboard-welcome {
+        margin-bottom: 20px;
+    }
+
+    .auth-page,
+    .auth-section,
+    .login-page,
+    .otp-page {
+        min-height: calc(100vh - 66px);
+        padding: 24px 14px !important;
+    }
+
+    .booking-page {
+        min-height: calc(100vh - 66px);
+        padding: 28px 14px 45px !important;
+    }
+
+    .center-button {
+        margin-top: 22px;
+    }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+    .hero-section {
+        padding-top: 24px !important;
+    }
+
+    .home-section {
+        padding-top: 22px !important;
+    }
+
+    .home-section.light-section,
+    .light-section.home-section {
+        padding-top: 22px !important;
+    }
+
+    .home-section .category-card {
+        min-height: 140px;
+        padding: 18px 14px;
+    }
+
+    .home-section .section-heading,
+    .how-it-works .section-heading {
+        margin-bottom: 16px !important;
+    }
+}
