@@ -71,10 +71,9 @@
                 href="{% url 'service_list' %}?category={{ category.id }}"
                 class="category-card"
             >
-                <div class="category-icon">
-                    🛠️
-                </div>
-
+   <div class="category-icon">
+    <i class="{{ category.icon }}"></i>
+</div>
                 <h3>{{ category.name }}</h3>
 
                 {% if category.description %}
