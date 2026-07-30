@@ -9,18 +9,8 @@ from .models import ProviderProfile, User
 
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(
-        required=True,
-        widget=forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter your email",
-                "autocomplete": "email",
-            }
-        ),
-    )
-
     username = forms.CharField(
+        label="Username",
         required=True,
         widget=forms.TextInput(
             attrs={
@@ -31,7 +21,20 @@ class RegisterForm(UserCreationForm):
         ),
     )
 
+    email = forms.EmailField(
+        label="Email",
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter your email",
+                "autocomplete": "email",
+            }
+        ),
+    )
+
     password1 = forms.CharField(
+        label="Password",
         required=True,
         widget=forms.PasswordInput(
             attrs={
@@ -43,6 +46,7 @@ class RegisterForm(UserCreationForm):
     )
 
     password2 = forms.CharField(
+        label="Confirm Password",
         required=True,
         widget=forms.PasswordInput(
             attrs={
@@ -71,6 +75,12 @@ class RegisterForm(UserCreationForm):
             ),
         }
 
+        labels = {
+            "username": "Username",
+            "email": "Email",
+            "user_type": "User Type",
+        }
+
     def clean_email(self):
         email = self.cleaned_data.get(
             "email",
@@ -85,7 +95,6 @@ class RegisterForm(UserCreationForm):
             )
 
         return email
-
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
