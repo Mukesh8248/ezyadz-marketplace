@@ -2545,7 +2545,7 @@ main {
 .main-service-image,
 .detail-image-placeholder {
     width: 100%;
-    min-height: 480px;
+    max-height: 480px;
 }
 
 .main-service-image {
@@ -3526,7 +3526,7 @@ main {
     }
 
     .hero-section {
-        padding: 30px 14px 38px !important;
+        padding: 30px 25px 38px !important;
     }
 
     .hero-content h1 {
@@ -3548,7 +3548,7 @@ main {
     }
 
     .home-section {
-        padding: 26px 14px 38px !important;
+        padding: 26px 25px 38px !important;
     }
 
     .home-section.light-section,
